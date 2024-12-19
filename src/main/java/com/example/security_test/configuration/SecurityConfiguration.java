@@ -41,7 +41,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        http.csrf(csrf->csrf.disable())
                 .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**")
                         .permitAll().anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
@@ -76,8 +76,8 @@ public class SecurityConfiguration {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
         List<String> allowedOriginsList = Arrays.asList(allowedOrigin.split(","));
-        corsConfiguration.setAllowedOrigins(allowedOriginsList);
-//		corsConfiguration.setAllowedOrigins(Arrays.asList( "http://localhost:5000","http://localhost:3000","http://78.96.25.131:5000"));
+//        corsConfiguration.setAllowedOrigins(allowedOriginsList);
+		corsConfiguration.setAllowedOrigins(Arrays.asList( "http://localhost:3000"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
                 "Accept", "Jwt-Token", "Authorization", "Origin, Accept", "X-Requested-With",
                 "Access-Control-Request-Method", "Access-Control-Request-Headers", "Access-Control-Allow-Headers"));
