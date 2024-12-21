@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: kube-land
+
+  datasource:
+    url: jdbc:mysql://mysql:3306/kube_db?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true
+    username: root
+    password: root
+param:
+  land-name: kube-land
+  land-service: kube-land
+  microserv1-name: kube-ms1
+  microserv1-service: kube-ms1
+  api-service: api-service

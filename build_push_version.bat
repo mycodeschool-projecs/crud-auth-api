@@ -11,6 +11,6 @@ docker buildx create --use || docker buildx use default
 
 echo "Building and pushing multi-platform Docker image..."
 @REM docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t ion21/kube-security:%SERVICE_VERSION% --push .
-docker buildx build --platform linux/amd64 -f Dockerfile -t ion21/kube-security:%SERVICE_VERSION% --push .
+docker buildx build --platform linux/amd64 -f Dockerfile -t ion21/kube-land:%SERVICE_VERSION% --push .
 
 echo "Script completed."

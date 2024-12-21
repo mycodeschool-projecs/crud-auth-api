@@ -18,11 +18,11 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
-@CrossOrigin(origins = {"http://localhost:3000","http://localhost:8082"},
-        methods = {RequestMethod.GET, RequestMethod.POST,RequestMethod.DELETE},
-        allowedHeaders = "*",
-        allowCredentials = "true",
-        maxAge = 3600)
+//@CrossOrigin(origins = {"http://localhost:3000","http://localhost:8082"},
+//        methods = {RequestMethod.GET, RequestMethod.POST,RequestMethod.DELETE},
+//        allowedHeaders = "*",
+//        allowCredentials = "true",
+//        maxAge = 3600)
 public class AuthenticationController {
     private AuthenticationService authenticationService;
 

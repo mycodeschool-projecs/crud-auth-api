@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@FeignClient(name = "api-service",url = "http://localhost:8081/api/v1/client")
-@CrossOrigin(origins = {"http://localhost:3000"},
-        methods = {RequestMethod.GET, RequestMethod.POST,RequestMethod.DELETE},
-        allowedHeaders = "*",
-        allowCredentials = "true",
-        maxAge = 3600)
+@FeignClient(name = "${param.microserv1-name}",url = "http://"+"${param.microserv1-service}"+":8081/api/v1/client")
+//@CrossOrigin(origins = {"http://localhost:3000"},
+//        methods = {RequestMethod.GET, RequestMethod.POST,RequestMethod.DELETE},
+//        allowedHeaders = "*",
+//        allowCredentials = "true",
+//        maxAge = 3600)
 public interface Serv1Client {
 
 

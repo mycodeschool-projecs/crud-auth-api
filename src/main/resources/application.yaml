@@ -1,6 +1,6 @@
 spring:
   application:
-    name: kube-security
+    name: kube-land
 
   datasource:
     url: jdbc:mysql://localhost:3306/kube_db?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true
@@ -27,6 +27,10 @@ token:
 cors:
   allowed-origin: ${ADDITIONAL_CORS_ORIGIN:http://localhost:3000}
 param:
+  land-name: kube-land
+  land-service: localhost
+  microserv1-name: kube-ms1
+  microserv1-service: localhost
   api-service: localhost
 
 
@@ -35,6 +39,7 @@ server:
     include-binding-errors: always
     include-message: always
   port: 8082
+
 
 
 #spring.security.jwt.secret-key=3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
