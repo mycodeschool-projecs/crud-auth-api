@@ -18,6 +18,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
+@CrossOrigin
+
 //@CrossOrigin(origins = {"http://localhost:3000","http://localhost:8082"},
 //        methods = {RequestMethod.GET, RequestMethod.POST,RequestMethod.DELETE},
 //        allowedHeaders = "*",

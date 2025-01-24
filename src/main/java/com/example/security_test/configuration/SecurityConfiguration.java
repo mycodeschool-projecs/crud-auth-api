@@ -44,12 +44,24 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable()) // Dezactivează protecția CSRF
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**")
+                .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**","/ws/**","/swagger-ui.html","/swagger-ui/**","/actuator/**")
                         .permitAll().anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
+
+//        http
+//                .csrf(csrf -> csrf.disable()) // Dezactivează CSRF
+//                .authorizeHttpRequests(authorize ->
+//                        authorize
+//                                .requestMatchers("/ws/**", "/api/v1/auth/**").permitAll() // Permite acces fără autentificare
+//                                .anyRequest().authenticated() // Restul necesită autentificare
+//                )
+//                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
+//                .authenticationProvider(authenticationProvider()).addFilterBefore(
+//                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+//        return http.build();
     }
 
     @Bean
@@ -93,6 +105,7 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+//        allowedOrigins=allowedOrigins+",http://react-app.local";
         List<String> allowedOriginsList = Arrays.asList(allowedOrigins.split(","));
 
         configuration.setAllowedOrigins(allowedOriginsList);
@@ -104,4 +117,10 @@ public class SecurityConfiguration {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http.csrf().disable()
+//                .authorizeRequests().anyRequest().permitAll(); // Permite tot
+//    }
 }
