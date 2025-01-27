@@ -83,29 +83,10 @@ public class SecurityConfiguration {
         return config.getAuthenticationManager();
     }
 
-//    @Bean
-//    public CorsFilter corsFilter() {
-//
-//        UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
-//        CorsConfiguration corsConfiguration = new CorsConfiguration();
-//        corsConfiguration.setAllowCredentials(true);
-//        List<String> allowedOriginsList = Arrays.asList(allowedOrigin.split(","));
-////        corsConfiguration.setAllowedOrigins(allowedOriginsList);
-//		corsConfiguration.setAllowedOrigins(Arrays.asList( "http://localhost:3000","http://localhost:5000"));
-//        corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
-//                "Accept", "Jwt-Token", "Authorization", "Origin, Accept", "X-Requested-With",
-//                "Access-Control-Request-Method", "Access-Control-Request-Headers", "Access-Control-Allow-Headers"));
-//        corsConfiguration.setExposedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Jwt-Token", "Authorization",
-//                "Access-Control-Allow-Origin", "Access-Control-Allow-Origin", "Access-Control-Allow-Credentials", "Access-Control-Allow-Headers"));
-//        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-//        urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
-//        return new CorsFilter(urlBasedCorsConfigurationSource);
-//    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-//        allowedOrigins=allowedOrigins+",http://react-app.local";
         List<String> allowedOriginsList = Arrays.asList(allowedOrigins.split(","));
 
         configuration.setAllowedOrigins(allowedOriginsList);
@@ -118,9 +99,5 @@ public class SecurityConfiguration {
         return source;
     }
 
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http.csrf().disable()
-//                .authorizeRequests().anyRequest().permitAll(); // Permite tot
-//    }
+
 }
