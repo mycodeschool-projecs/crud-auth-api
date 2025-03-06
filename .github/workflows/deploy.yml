@@ -1,4 +1,4 @@
-name: CD - Deploy kube-ms1
+name: CD - Deploy kube-land
 
 on:
   push:
