@@ -33,6 +33,9 @@ param:
   microserv1-service: localhost
   api-service: localhost
 
+springdoc:
+  api-docs:
+    enabled=true:
 
 server:
   error:
