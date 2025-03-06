@@ -9,7 +9,7 @@ LABEL description="Docker image for kube-land Spring Boot application"
 
 # Set the current working directory inside the image
 WORKDIR /app
-EXPOSE 8081
+EXPOSE 8082
 # Copy maven executable to the image
 COPY mvnw .
 COPY .mvn .mvn
