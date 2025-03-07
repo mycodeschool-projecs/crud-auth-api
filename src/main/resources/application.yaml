@@ -35,7 +35,13 @@ param:
 
 springdoc:
   api-docs:
-    enabled=true:
+    enabled: true  # Activează OpenAPI JSON
+  swagger-ui:
+    enabled: true  # Activează Swagger UI
+    path: /swagger-ui.html  # Calea unde poate fi accesat Swagger
+    operations-sorter: method  # Sortează endpoint-urile după metoda HTTP
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
 
 server:
   error:
