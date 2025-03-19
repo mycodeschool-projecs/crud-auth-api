@@ -7,6 +7,9 @@ import com.example.security_test.model.SigninRequest;
 import com.example.security_test.repository.UserRepository;
 import com.example.security_test.service.AuthenticationService;
 import com.example.security_test.service.JwtAuthenticationResponse;
+import com.example.security_test.system.logs.StructuredLogger;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1")
 @CrossOrigin
-
+@Slf4j
 //@CrossOrigin(origins = {"http://localhost:3000","http://localhost:8082"},
 //        methods = {RequestMethod.GET, RequestMethod.POST,RequestMethod.DELETE},
 //        allowedHeaders = "*",
@@ -32,12 +35,17 @@ public class AuthenticationController {
 
     private UserRepository userRepository;
 
+
+//    @Autowired
+    private StructuredLogger logger;
+
     public AuthenticationController(AuthenticationService authenticationService,
                                     Serv1Adapter serv1Adapter,
-                                    UserRepository userRepository){
+                                    UserRepository userRepository,StructuredLogger logger){
         this.authenticationService=authenticationService;
         this.serv1Adapter=serv1Adapter;
         this.userRepository=userRepository;
+        this.logger=logger;
     }
 
     @PostMapping("/auth/signup")
@@ -53,6 +61,7 @@ public class AuthenticationController {
 
     @PostMapping("/auth/signin")
     public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
+        logger.logBuilder().withMessage("ACTION_SIGN_IN").withLevel("INFO").withField("SIGNIN_EMAIL:","jhjhjh").log();
         return ResponseEntity.ok(authenticationService.signin(request));
     }
 
