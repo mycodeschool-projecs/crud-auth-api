@@ -2,15 +2,15 @@
 <configuration scan="true" scanPeriod="30 seconds">
 
     <!-- Define the service name -->
+    <!-- Define the service name -->
     <property name="SERVICE_NAME" value="Kube-land"/>
 
     <!-- Define the Logstash destination with a default -->
-<!--    <property name="LOGSTASH_DESTINATION" value="${LOGSTASH_DESTINATION:-logstash:5000}"/>-->
-    <springProperty name="LOGSTASH_DESTINATION" source="logs.destination" defaultValue="localhost:3100"/>
+    <property name="LOGSTASH_DESTINATION" value="${LOGSTASH_DESTINATION:-logstash:3100}"/>
 
     <!-- Rolling File Appender -->
     <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>./logs/test.log</file>
+        <file>./logs/kube-land_logs.log</file>
         <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
                 <timestamp>
@@ -49,7 +49,7 @@
             </providers>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>./logs/test.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>./logs/kube-land_logs.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
