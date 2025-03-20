@@ -37,15 +37,15 @@ public class AuthenticationController {
 
 
 //    @Autowired
-    private StructuredLogger logger;
+//    private StructuredLogger logger;
 
     public AuthenticationController(AuthenticationService authenticationService,
                                     Serv1Adapter serv1Adapter,
-                                    UserRepository userRepository,StructuredLogger logger){
+                                    UserRepository userRepository){
         this.authenticationService=authenticationService;
         this.serv1Adapter=serv1Adapter;
         this.userRepository=userRepository;
-        this.logger=logger;
+//        this.logger=logger;
     }
 
     @PostMapping("/auth/signup")
@@ -61,7 +61,7 @@ public class AuthenticationController {
 
     @PostMapping("/auth/signin")
     public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
-        logger.logBuilder().withMessage("ACTION_SIGN_IN").withLevel("INFO").withField("SIGNIN_EMAIL:","jhjhjh").log();
+//        logger.logBuilder().withMessage("ACTION_SIGN_IN").withLevel("INFO").withField("SIGNIN_EMAIL:","jhjhjh").log();
         return ResponseEntity.ok(authenticationService.signin(request));
     }
 
