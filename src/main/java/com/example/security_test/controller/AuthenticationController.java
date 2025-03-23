@@ -50,7 +50,6 @@ public class AuthenticationController {
 
     @PostMapping("/auth/signup")
     public ResponseEntity<?> signup(@RequestBody SignUpRequest request) {
-
         if(!userRepository.findByEmail(request.getEmail()).isPresent()){
             return ResponseEntity.ok(authenticationService.signup(request));
         }
@@ -62,6 +61,7 @@ public class AuthenticationController {
     @PostMapping("/auth/signin")
     public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
 //        logger.logBuilder().withMessage("ACTION_SIGN_IN").withLevel("INFO").withField("SIGNIN_EMAIL:","jhjhjh").log();
+        log.info("USER_SIGNIN");
         return ResponseEntity.ok(authenticationService.signin(request));
     }
 
