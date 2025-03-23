@@ -2,8 +2,10 @@ name: CD - Deploy kube-land
 
 on:
   push:
-    branches: [ master ]
-  workflow_dispatch:
+    branches:
+      - '*'           # All branches
+      - '!dev'         # Exclude dev branch
+      - '!feature/*'   # Exclude all feature branches  workflow_dispatch:
 
 permissions:
   contents: write
