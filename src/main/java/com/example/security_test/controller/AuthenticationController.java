@@ -64,12 +64,12 @@ public class AuthenticationController {
         try{
             logger.logBuilder().withLevel("INFO")
                     .withMessage("USER_SIGNIN")
-                    .withField("sgnUser",request);
+                    .withField("sgnUser:",request).log();
 
             return ResponseEntity.ok(authenticationService.signin(request));
 
         }catch (Exception e){
-            logger.logBuilder().withLevel("ERROR").withMessage("BAD_CREDENTIAL");
+            logger.logBuilder().withLevel("ERROR").withMessage("BAD_CREDENTIAL").log();
             throw new RuntimeException("Bad credential!");
         }
 
