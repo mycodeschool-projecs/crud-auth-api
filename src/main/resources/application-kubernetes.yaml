@@ -11,4 +11,14 @@ param:
   api-service: api-service
 
 logging:
-  level.org.springframework=INFO
+  logstash:
+    destination: "logstash:3100"
+
+management:
+  # Micrometer-based tracing in Spring Boot 3.x
+  tracing:
+    sampling:
+      probability: 1.0   # 100% for testing, lower for production
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans

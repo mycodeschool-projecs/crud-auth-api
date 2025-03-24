@@ -6,7 +6,8 @@
     <property name="SERVICE_NAME" value="Kube-land"/>
 
     <!-- Define the Logstash destination with a default -->
-    <property name="LOGSTASH_DESTINATION" value="${LOGSTASH_DESTINATION:-logstash:3100}"/>
+    <property name="LOGSTASH_DESTINATION"
+              value="${logging.logstash.destination:-logstash:3100}"/>
 
     <!-- Rolling File Appender -->
     <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">

@@ -72,8 +72,8 @@ logging:
     root: debug
   file:
     name: kube-land-logs.log
-
-
+  logstash:
+    destination: "localhost:3100"
 #spring.security.jwt.secret-key=3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b
 #  # 1h in millisecond
 #  security.jwt.expiration-time=3600000

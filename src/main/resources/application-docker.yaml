@@ -22,3 +22,6 @@ param:
   microserv1-service: kube-ms1
   api-service: api-service
 
+logging:
+  logstash:
+    destination: "logstash:3100"
