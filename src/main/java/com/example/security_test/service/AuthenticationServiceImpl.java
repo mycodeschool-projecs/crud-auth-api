@@ -5,7 +5,9 @@ import com.example.security_test.model.SignUpRequest;
 import com.example.security_test.model.SigninRequest;
 import com.example.security_test.model.User;
 import com.example.security_test.repository.UserRepository;
+import com.example.security_test.system.logs.StructuredLogger;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +19,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    @Autowired
     private final AuthenticationManager authenticationManager;
+
+    private final StructuredLogger structuredLogger;
     @Override
     public JwtAuthenticationResponse signup(SignUpRequest request) {
         var user = User.builder().firstName(request.getFirstName()).lastName(request.getLastName())
