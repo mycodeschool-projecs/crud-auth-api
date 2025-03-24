@@ -22,7 +22,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Autowired
     private final AuthenticationManager authenticationManager;
 
-    private final StructuredLogger structuredLogger;
+
+//    private final StructuredLogger structuredLogger;
     @Override
     public JwtAuthenticationResponse signup(SignUpRequest request) {
         var user = User.builder().firstName(request.getFirstName()).lastName(request.getLastName())
