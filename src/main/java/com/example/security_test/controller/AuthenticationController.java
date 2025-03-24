@@ -36,8 +36,8 @@ public class AuthenticationController {
     private UserRepository userRepository;
 
 
-//    @Autowired
-//    private StructuredLogger logger;
+    @Autowired
+    private StructuredLogger logger;
 
     public AuthenticationController(AuthenticationService authenticationService,
                                     Serv1Adapter serv1Adapter,
@@ -51,6 +51,7 @@ public class AuthenticationController {
     @PostMapping("/auth/signup")
     public ResponseEntity<?> signup(@RequestBody SignUpRequest request) {
         if(!userRepository.findByEmail(request.getEmail()).isPresent()){
+
             return ResponseEntity.ok(authenticationService.signup(request));
         }
             return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -61,8 +62,15 @@ public class AuthenticationController {
     @PostMapping("/auth/signin")
     public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
 //        logger.logBuilder().withMessage("ACTION_SIGN_IN").withLevel("INFO").withField("SIGNIN_EMAIL:","jhjhjh").log();
-        log.info("USER_SIGNIN");
-        return ResponseEntity.ok(authenticationService.signin(request));
+        try{
+            logger.logBuilder().withLevel("INFO").withField("sgnUser:",request);
+            return ResponseEntity.ok(authenticationService.signin(request));
+
+        }catch (Exception e){
+            logger.logBuilder().withLevel("ERROR").withMessage("BAD CREDENTIAL");
+            throw new RuntimeException("Bad credential!");
+        }
+
     }
 
     @ResponseStatus(HttpStatus.OK)
