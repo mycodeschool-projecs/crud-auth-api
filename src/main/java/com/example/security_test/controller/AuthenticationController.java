@@ -63,7 +63,8 @@ public class AuthenticationController {
     public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
 //        logger.logBuilder().withMessage("ACTION_SIGN_IN").withLevel("INFO").withField("SIGNIN_EMAIL:","jhjhjh").log();
         try{
-            logger.logBuilder().withLevel("INFO").withField("sgnUser:",request);
+            logger.logBuilder().withLevel("INFO").withMessage("USER_SIGNIN").withField("sgnUser:",request);
+
             return ResponseEntity.ok(authenticationService.signin(request));
 
         }catch (Exception e){
