@@ -36,16 +36,15 @@ public class AuthenticationController {
     private UserRepository userRepository;
 
 
-    @Autowired
     private StructuredLogger logger;
 
     public AuthenticationController(AuthenticationService authenticationService,
                                     Serv1Adapter serv1Adapter,
-                                    UserRepository userRepository){
+                                    UserRepository userRepository,StructuredLogger logger){
         this.authenticationService=authenticationService;
         this.serv1Adapter=serv1Adapter;
         this.userRepository=userRepository;
-//        this.logger=logger;
+        this.logger=logger;
     }
 
     @PostMapping("/auth/signup")
@@ -63,12 +62,14 @@ public class AuthenticationController {
     public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
 //        logger.logBuilder().withMessage("ACTION_SIGN_IN").withLevel("INFO").withField("SIGNIN_EMAIL:","jhjhjh").log();
         try{
-            logger.logBuilder().withLevel("INFO").withMessage("USER_SIGNIN").withField("sgnUser:",request);
+            logger.logBuilder().withLevel("INFO")
+                    .withMessage("USER_SIGNIN")
+                    .withField("sgnUser:",request).log();
 
             return ResponseEntity.ok(authenticationService.signin(request));
 
         }catch (Exception e){
-            logger.logBuilder().withLevel("ERROR").withMessage("BAD CREDENTIAL");
+            logger.logBuilder().withLevel("ERROR").withMessage("BAD_CREDENTIAL").log();
             throw new RuntimeException("Bad credential!");
         }
 
