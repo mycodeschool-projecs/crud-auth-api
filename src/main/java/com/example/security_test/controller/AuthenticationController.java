@@ -50,9 +50,16 @@ public class AuthenticationController {
     @PostMapping("/auth/signup")
     public ResponseEntity<?> signup(@RequestBody SignUpRequest request) {
         if(!userRepository.findByEmail(request.getEmail()).isPresent()){
+            logger.logBuilder().withLevel("INFO")
+                    .withMessage("USER_SIGNUP")
+                    .withField("sgnUpUser",request).log();
 
             return ResponseEntity.ok(authenticationService.signup(request));
         }
+        logger.logBuilder().withLevel("ERROR")
+                .withMessage("SIGNUP_ERROR")
+                .withField("sgnUpUser",request).log();
+
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Collections.singletonMap("error", "User already exists!"));
 
@@ -64,7 +71,7 @@ public class AuthenticationController {
         try{
             logger.logBuilder().withLevel("INFO")
                     .withMessage("USER_SIGNIN")
-                    .withField("sgnUser:",request).log();
+                    .withField("sgnUser",request).log();
 
             return ResponseEntity.ok(authenticationService.signin(request));
 
@@ -79,10 +86,14 @@ public class AuthenticationController {
     @PostMapping("/addclient")
     public ResponseEntity<MyClient> addClient(@RequestBody MyClient client){
         try{
-            System.out.println(client);
+            logger.logBuilder().withLevel("INFO")
+                    .withMessage("ADDED_CLIENT_OK")
+                    .withField("addedClient",client).log();
             return ResponseEntity.ok(serv1Adapter.addClient(client));
 
         }catch (RuntimeException e){
+            logger.logBuilder().withLevel("ERROR")
+                    .withMessage(e.getMessage()).log();
             throw e;
         }
     }
@@ -92,10 +103,14 @@ public class AuthenticationController {
     @PostMapping("/updclient")
     public ResponseEntity<MyClient> updClient(@RequestBody MyClient client){
         try{
-
+            logger.logBuilder().withLevel("INFO")
+                    .withMessage("UPD_CLIENT")
+                    .withField("updClient",client).log();
             return ResponseEntity.ok(serv1Adapter.updClient(client));
 
         }catch (RuntimeException e){
+            logger.logBuilder().withLevel("ERROR")
+                    .withMessage(e.getMessage()).log();
             throw e;
         }
     }
@@ -105,10 +120,15 @@ public class AuthenticationController {
     @DeleteMapping("/delclient/{eml}")
     public ResponseEntity<Boolean> delClient(@PathVariable String eml){
         try{
-
+            logger.logBuilder().withLevel("INFO")
+                    .withMessage("DEL_CLIENT")
+                    .withField("delClientEml",eml).log();
             return ResponseEntity.ok(serv1Adapter.delClient(eml));
 
         }catch (RuntimeException e){
+            logger.logBuilder().withLevel("ERROR")
+                    .withMessage(e.getMessage()).log();
+
             throw e;
         }
     }
@@ -117,10 +137,14 @@ public class AuthenticationController {
     @GetMapping("/findclient/{eml}")
     public ResponseEntity<MyClient> findClient(@PathVariable String eml){
         try{
-
+            logger.logBuilder().withLevel("INFO")
+                    .withMessage("FIND_CLIENT")
+                    .withField("findClientEml",eml).log();
             return ResponseEntity.ok(serv1Adapter.findClient(eml));
 
         }catch (RuntimeException e){
+            logger.logBuilder().withLevel("ERROR")
+                    .withMessage(e.getMessage()).log();
             throw e;
         }
     }
@@ -130,10 +154,16 @@ public class AuthenticationController {
     @GetMapping("/getclients")
     public ResponseEntity<List<MyClient>> getAllClients(){
         try{
+            List<MyClient> list=serv1Adapter.getClients();
+            logger.logBuilder().withLevel("INFO")
+                    .withMessage("GET_CLIENTS")
+                    .withField("getAllClients",list.size());
 
-            return ResponseEntity.ok(serv1Adapter.getClients());
+            return ResponseEntity.ok(list);
 
         }catch (RuntimeException e){
+            logger.logBuilder().withLevel("ERROR")
+                    .withMessage(e.getMessage()).log();
             throw e;
         }
     }
