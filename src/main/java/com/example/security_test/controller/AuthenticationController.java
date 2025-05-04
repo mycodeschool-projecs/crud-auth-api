@@ -4,6 +4,8 @@ import com.example.security_test.intercom.Serv1.Serv1Adapter;
 import com.example.security_test.model.MyClient;
 import com.example.security_test.model.SignUpRequest;
 import com.example.security_test.model.SigninRequest;
+import com.example.security_test.rabbitMqProducer.MessagePublisher;
+import com.example.security_test.rabbitMqProducer.MyMessage;
 import com.example.security_test.repository.UserRepository;
 import com.example.security_test.service.AuthenticationService;
 import com.example.security_test.service.JwtAuthenticationResponse;
@@ -38,13 +40,16 @@ public class AuthenticationController {
 
     private StructuredLogger logger;
 
+    private MessagePublisher messagePublisher;
+
     public AuthenticationController(AuthenticationService authenticationService,
                                     Serv1Adapter serv1Adapter,
-                                    UserRepository userRepository,StructuredLogger logger){
+                                    UserRepository userRepository,StructuredLogger logger,MessagePublisher messagePublisher){
         this.authenticationService=authenticationService;
         this.serv1Adapter=serv1Adapter;
         this.userRepository=userRepository;
         this.logger=logger;
+        this.messagePublisher=messagePublisher;
     }
 
     @PostMapping("/auth/signup")
