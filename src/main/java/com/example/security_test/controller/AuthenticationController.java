@@ -4,6 +4,7 @@ import com.example.security_test.intercom.Serv1.Serv1Adapter;
 import com.example.security_test.model.MyClient;
 import com.example.security_test.model.SignUpRequest;
 import com.example.security_test.model.SigninRequest;
+import com.example.security_test.model.User;
 import com.example.security_test.rabbitMqProducer.MessagePublisher;
 import com.example.security_test.rabbitMqProducer.MyMessage;
 import com.example.security_test.repository.UserRepository;
@@ -42,6 +43,7 @@ public class AuthenticationController {
 
     private MessagePublisher messagePublisher;
 
+
     public AuthenticationController(AuthenticationService authenticationService,
                                     Serv1Adapter serv1Adapter,
                                     UserRepository userRepository,StructuredLogger logger,MessagePublisher messagePublisher){
@@ -58,7 +60,6 @@ public class AuthenticationController {
             logger.logBuilder().withLevel("INFO")
                     .withMessage("USER_SIGNUP")
                     .withField("sgnUpUser",request).log();
-
             return ResponseEntity.ok(authenticationService.signup(request));
         }
         logger.logBuilder().withLevel("ERROR")
@@ -94,6 +95,8 @@ public class AuthenticationController {
             logger.logBuilder().withLevel("INFO")
                     .withMessage("ADDED_CLIENT_OK")
                     .withField("addedClient",client).log();
+
+
             return ResponseEntity.ok(serv1Adapter.addClient(client));
 
         }catch (RuntimeException e){
