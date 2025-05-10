@@ -25,8 +25,23 @@ public class MessagePublisher {
     public boolean sendMessageString(MyMessage<String> message) {
         message.setPriority(7);
         try{
-            rabbitTemplate.convertAndSend(exchange.getName(), ProducerConfig.ROUTING_KEY_ONE, message);
+            rabbitTemplate.convertAndSend(exchange.getName(), RabbitMQConfig.ROUTING_KEY_ONE, message);
             System.out.println("Sent message: " + message.toString());
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+
+
+
+    }
+
+
+    public boolean sendMessageStringNotes(MyMessage<String> message) {
+        message.setPriority(7);
+        try{
+            rabbitTemplate.convertAndSend(exchange.getName(), RabbitMQConfig.ROUTING_KEY_THREE, message);
+            System.out.println(message.toString());
             return true;
         }catch (Exception e){
             return false;
@@ -39,7 +54,7 @@ public class MessagePublisher {
     public boolean sendMessageMyClient(MyMessage<SignUpRequest> message) {
         message.setPriority(7);
         try{
-            rabbitTemplate.convertAndSend(exchange.getName(), ProducerConfig.ROUTING_KEY_TWO, message);
+            rabbitTemplate.convertAndSend(exchange.getName(), RabbitMQConfig.ROUTING_KEY_TWO, message);
             System.out.println("Sent message: " + message.toString());
             return true;
         }catch (Exception e){

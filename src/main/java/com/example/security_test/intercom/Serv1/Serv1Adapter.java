@@ -8,6 +8,8 @@ import com.example.security_test.rabbitMqProducer.MessagePublisher;
 import com.example.security_test.rabbitMqProducer.MyMessage;
 import com.example.security_test.repository.NoteRepository;
 import com.example.security_test.repository.UserRepository;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,6 +24,7 @@ public class Serv1Adapter {
    private final UserRepository userRepository;
    private final NoteRepository noteRepository;
    private Serv1Client serv1Client;
+
 
    private MessagePublisher messagePublisher;
 
@@ -62,17 +65,26 @@ public class Serv1Adapter {
          newNote.setOperation("ADD_CLIENT");
          Authentication authentication=SecurityContextHolder.getContext().getAuthentication();
          String eml=authentication.getName();
-//         User authUser=(User)authentication.getPrincipal();
+
          Optional<User> authUser=userRepository.findByEmail(eml);
 
          if(authUser.isPresent()){
             newNote.setLoggedUser(authUser.get());
 
+
          }
-         //         User authUser=userRepository.findByEmail(auth.getName()).get();
-//         newNote.setLoggedUser(authUser);
          newNote.setStatus(NoteStatus.PENDING);
+         LocalDateTime time=LocalDateTime.now();
+         newNote.setLogTime(time);
+
          noteRepository.save(newNote);
+
+         long idNote=noteRepository.findByLogTimeaAndEmail(time,authUser.get().getEmail()).get().getId();
+         MyMessage myMessage1=new MyMessage();
+         myMessage1.setContent(idNote);
+         myMessage1.setPriority(7);
+         myMessage1.setMessage("id nota");
+         messagePublisher.sendMessageStringNotes(myMessage1);
 
          return resp.getBody();
       }catch (RuntimeException e){
