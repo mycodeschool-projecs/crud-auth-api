@@ -26,8 +26,9 @@ public class MyMessageListener {
         if(optNota.isPresent()){
             Note note=optNota.get();
             note.setStatus(NoteStatus.DONE);
+            noteRepository.save(note);
         }
-//
+
     }
 
 

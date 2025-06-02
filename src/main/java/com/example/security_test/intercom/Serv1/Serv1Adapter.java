@@ -79,7 +79,12 @@ public class Serv1Adapter {
 
          noteRepository.save(newNote);
 
-         long idNote=noteRepository.findByLogTimeaAndEmail(time,authUser.get().getEmail()).get().getId();
+
+         Optional<Note> optNote=noteRepository.findByLogTimeaAndEmail(time,myClient.getEmail());
+         long idNote=0L;
+         if(optNote.isPresent()){
+             idNote=optNote.get().getId();
+         }
          MyMessage myMessage1=new MyMessage();
          myMessage1.setContent(idNote);
          myMessage1.setPriority(7);

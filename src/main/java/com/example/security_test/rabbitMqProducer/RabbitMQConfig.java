@@ -1,87 +1,126 @@
 package com.example.security_test.rabbitMqProducer;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 @Configuration
 public class RabbitMQConfig {
 
-    public static final String EXCHANGE_NAME = "my.direct.exchange";
+    public static final String EXCHANGE_NAME       = "my.direct.exchange";
+    public static final String DLX_NAME            = "my.dlx";
 
-    public static final String ROUTING_KEY_ONE   = "routing.key.one";
-    public static final String ROUTING_KEY_TWO   = "routing.key.two";
-    public static final String ROUTING_KEY_THREE = "routing.key.three";
-    public static final String ROUTING_KEY_FOUR  = "routing.key.four";
+    public static final String ROUTING_KEY_ONE     = "routing.key.one";
+    public static final String ROUTING_KEY_TWO     = "routing.key.two";
+    public static final String ROUTING_KEY_THREE   = "routing.key.three";
+    public static final String ROUTING_KEY_FOUR    = "routing.key.four";
 
-    public static final String QUEUE_ONE   = "queue.one";
-    public static final String QUEUE_TWO   = "queue.two";
-    public static final String QUEUE_THREE = "queue.three";
-    public static final String QUEUE_FOUR  = "queue.four";
+    public static final String QUEUE_ONE           = "queue.one";
+    public static final String QUEUE_TWO           = "queue.two";
+    public static final String QUEUE_THREE         = "queue.three";
+    public static final String QUEUE_FOUR          = "queue.four";
+    public static final String DLQ_FOUR            = "queue.four.dlq";
 
     @Bean
-    public DirectExchange directExchange() {
+    @Primary
+    DirectExchange directExchange() {
         return new DirectExchange(EXCHANGE_NAME);
     }
 
     @Bean
-    public Queue queueOne()   { return new Queue(QUEUE_ONE,   true); }
+    DirectExchange deadLetterExchange() {
+        return new DirectExchange(DLX_NAME);
+    }
 
     @Bean
-    public Queue queueTwo()   { return new Queue(QUEUE_TWO,   true); }
+    Queue queueOne() {
+        return QueueBuilder.durable(QUEUE_ONE)
+                .maxPriority(10)
+                .build();
+    }
 
     @Bean
-    public Queue queueThree() { return new Queue(QUEUE_THREE, true); }
+    Queue queueTwo() {
+        return QueueBuilder.durable(QUEUE_TWO)
+                .maxPriority(10)
+                .build();
+    }
 
     @Bean
-    public Queue queueFour()  { return new Queue(QUEUE_FOUR,  true); }
+    Queue queueThree() {
+        return QueueBuilder.durable(QUEUE_THREE)
+                .maxPriority(10)
+                .build();
+    }
 
     @Bean
-    public Binding bindingOne(Queue queueOne, DirectExchange directExchange) {
+    Queue queueFour() {
+        return QueueBuilder.durable(QUEUE_FOUR)
+                .maxPriority(10)
+                .deadLetterExchange(DLX_NAME)
+                .deadLetterRoutingKey(ROUTING_KEY_FOUR)
+                .build();
+    }
+
+    @Bean
+    Queue deadLetterQueueFour() {
+        return QueueBuilder.durable(DLQ_FOUR).build();
+    }
+
+    @Bean
+    Binding bindingOne(Queue queueOne, DirectExchange directExchange) {
         return BindingBuilder.bind(queueOne).to(directExchange).with(ROUTING_KEY_ONE);
     }
 
     @Bean
-    public Binding bindingTwo(Queue queueTwo, DirectExchange directExchange) {
+    Binding bindingTwo(Queue queueTwo, DirectExchange directExchange) {
         return BindingBuilder.bind(queueTwo).to(directExchange).with(ROUTING_KEY_TWO);
     }
 
     @Bean
-    public Binding bindingThree(Queue queueThree, DirectExchange directExchange) {
+    Binding bindingThree(Queue queueThree, DirectExchange directExchange) {
         return BindingBuilder.bind(queueThree).to(directExchange).with(ROUTING_KEY_THREE);
     }
 
     @Bean
-    public Binding bindingFour(Queue queueFour, DirectExchange directExchange) {
+    Binding bindingFour(Queue queueFour, DirectExchange directExchange) {
         return BindingBuilder.bind(queueFour).to(directExchange).with(ROUTING_KEY_FOUR);
     }
 
     @Bean
-    public Jackson2JsonMessageConverter jsonMessageConverter() {
+    Binding dlqBindingFour(Queue deadLetterQueueFour, DirectExchange deadLetterExchange) {
+        return BindingBuilder.bind(deadLetterQueueFour)
+                .to(deadLetterExchange)
+                .with(ROUTING_KEY_FOUR);
+    }
+
+    @Bean
+    Jackson2JsonMessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 
     @Bean
-    public SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
+    SimpleRabbitListenerContainerFactory rabbitListenerContainerFactory(
             ConnectionFactory connectionFactory,
             Jackson2JsonMessageConverter jsonMessageConverter) {
+
         SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         factory.setMessageConverter(jsonMessageConverter);
+        factory.setDefaultRequeueRejected(false);
         return factory;
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,
-                                         Jackson2JsonMessageConverter jsonMessageConverter) {
-        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(jsonMessageConverter);
-        return rabbitTemplate;
+    RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,
+                                  Jackson2JsonMessageConverter jsonMessageConverter) {
+
+        RabbitTemplate template = new RabbitTemplate(connectionFactory);
+        template.setMessageConverter(jsonMessageConverter);
+        return template;
     }
 }
