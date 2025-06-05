@@ -42,7 +42,7 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable()) // Dezactivează protecția CSRF
+        http.csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(request -> request.requestMatchers("/api/v1/auth/**","/ws/**",
                                 "/v3/api-docs/**",
@@ -56,17 +56,6 @@ public class SecurityConfiguration {
                         jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
 
-//        http
-//                .csrf(csrf -> csrf.disable()) // Dezactivează CSRF
-//                .authorizeHttpRequests(authorize ->
-//                        authorize
-//                                .requestMatchers("/ws/**", "/api/v1/auth/**").permitAll() // Permite acces fără autentificare
-//                                .anyRequest().authenticated() // Restul necesită autentificare
-//                )
-//                .sessionManagement(manager -> manager.sessionCreationPolicy(STATELESS))
-//                .authenticationProvider(authenticationProvider()).addFilterBefore(
-//                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-//        return http.build();
     }
 
     @Bean
