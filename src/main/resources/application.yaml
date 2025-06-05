@@ -41,6 +41,8 @@ param:
   api-service: localhost
   auth-service-name: kube-auth
   auth-service: localhost
+  notifications-name: kube-notifications
+  notifications-service: localhost
 
 springdoc:
   api-docs:
