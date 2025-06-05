@@ -6,6 +6,21 @@ spring:
     url: jdbc:mysql://mysql:3306/kube_db?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
     username: root
     password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+      hibernate.format_sql: true
+    show-sql: true
+
+  rabbitmq:
+    host: rabbitmq
+    port: 5672
+    username: guest
+    password: guest
 
 management:
   tracing:
@@ -24,6 +39,17 @@ management:
     prometheus:
       enabled: true
 
+# Swagger/OpenAPI Configuration
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /docs
+    operations-sorter: method
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+
 
 param:
   land-name: kube-land
@@ -31,4 +57,5 @@ param:
   microserv1-name: kube-ms1
   microserv1-service: kube-ms1
   api-service: api-service
-
+  auth-service-name: kube-auth
+  auth-service: kube-auth

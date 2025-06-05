@@ -3,16 +3,22 @@ spring:
     name: kube-land
 
   datasource:
-    url: jdbc:mysql://localhost:3306/kube_db?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true
+    url: jdbc:mysql://localhost:3307/kube_db?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
   jpa:
     hibernate:
       ddl-auto: update
     properties:
-      hibernate-dialect: org.hibernate.dialect.MySQL8Dialect
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
       hibernate.format_sql: true
     show-sql: true
 
@@ -33,14 +39,18 @@ param:
   microserv1-name: kube-ms1
   microserv1-service: localhost
   api-service: localhost
+  auth-service-name: kube-auth
+  auth-service: localhost
 
 springdoc:
   api-docs:
-    enabled: true  # Activează OpenAPI JSON
+    enabled: true  # Enable OpenAPI JSON
   swagger-ui:
-    enabled: true  # Activează Swagger UI
-    path: /swagger-ui.html  # Calea unde poate fi accesat Swagger
-    operations-sorter: method  # Sortează endpoint-urile după metoda HTTP
+    enabled: true  # Enable Swagger UI
+    path: /docs  # Path where Swagger can be accessed
+    operations-sorter: method  # Sort endpoints by HTTP method
+    disable-swagger-default-url: true
+    display-request-duration: true
   default-consumes-media-type: application/json
   default-produces-media-type: application/json
 
@@ -81,8 +91,21 @@ logging:
     level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
   level:
     root: debug
+    org.springframework.amqp: info
   file:
     name: kube-land-logs.log
+  logstash:
+    enabled: false
+    destination: localhost:3100
+    level: OFF  # Set to ALL to enable, OFF to disable
+
+# RabbitMQ event publishing configuration
+rabbitmq:
+  exchange:
+    name: crud-events-exchange
+  routing:
+    key:
+      prefix: crud.events
 
 
 #spring.security.jwt.secret-key=3cfa76ef14937c1c0ea519f8fc057a80fcd04a7420f8e8bcd0a7567c272e007b

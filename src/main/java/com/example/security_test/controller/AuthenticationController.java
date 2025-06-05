@@ -167,4 +167,26 @@ public class AuthenticationController {
             throw e;
         }
     }
+
+    /**
+     * Proxy endpoint to handle direct requests to /api/v1/clients
+     * This forwards the request to the command service via the Serv1Adapter
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/clients")
+    public ResponseEntity<List<MyClient>> getClientsProxy(){
+        try{
+            List<MyClient> list=serv1Adapter.getClients();
+            logger.logBuilder().withLevel("INFO")
+                    .withMessage("GET_CLIENTS_PROXY")
+                    .withField("getClientsProxy",list.size()).log();
+
+            return ResponseEntity.ok(list);
+
+        }catch (RuntimeException e){
+            logger.logBuilder().withLevel("ERROR")
+                    .withMessage(e.getMessage()).log();
+            throw e;
+        }
+    }
 }

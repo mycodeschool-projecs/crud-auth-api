@@ -3,6 +3,12 @@ spring:
     url: jdbc:mysql://mysql-service:3306/testdb?useUnicode=true&characterEncoding=utf8&useSSL=false&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true
     username: testuser
     password: testpass
+
+  rabbitmq:
+    host: crud-app-rabbitmq
+    port: 5672
+    username: guest
+    password: guest
 param:
   land-name: kube-land
   land-service: kube-land
@@ -40,5 +46,6 @@ logging:
     level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
   level:
     root: debug
+    org.springframework.amqp: info
   file:
     name: kube-land-logs.log

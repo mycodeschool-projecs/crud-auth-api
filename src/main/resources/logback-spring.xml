@@ -5,8 +5,10 @@
     <!-- Define the service name -->
     <property name="SERVICE_NAME" value="Kube-land"/>
 
-    <!-- Define the Logstash destination with a default -->
-    <property name="LOGSTASH_DESTINATION" value="${LOGSTASH_DESTINATION:-logstash:3100}"/>
+    <!-- Read Logstash configuration from application.yaml -->
+    <springProperty scope="context" name="LOGSTASH_DESTINATION" source="logging.logstash.destination" defaultValue="localhost:3100"/>
+    <springProperty scope="context" name="LOGSTASH_ENABLED" source="logging.logstash.enabled" defaultValue="false"/>
+    <springProperty scope="context" name="LOGSTASH_LEVEL" source="logging.logstash.level" defaultValue="OFF"/>
 
     <!-- Rolling File Appender -->
     <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -98,8 +100,14 @@
 
     <!-- Logstash Appender -->
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>logstash:3100</destination>
+        <destination>${LOGSTASH_DESTINATION}</destination>
         <includeCallerData>true</includeCallerData>
+        <reconnectionDelay>10 seconds</reconnectionDelay>
+        <connectionTimeout>5 seconds</connectionTimeout>
+        <writeTimeout>5 seconds</writeTimeout>
+        <!-- Don't block the application if Logstash is not available -->
+        <droppedWarnFrequency>5 minutes</droppedWarnFrequency>
+        <droppedWarnMaxBurst>10000</droppedWarnMaxBurst>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <fieldNames>
                 <timestamp>timestamp</timestamp>
@@ -118,10 +126,25 @@
         </encoder>
     </appender>
 
+    <!-- Async Logstash Appender with level filter -->
+    <appender name="ASYNC_LOGSTASH" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="LOGSTASH" />
+        <includeCallerData>true</includeCallerData>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <neverBlock>true</neverBlock>
+        <!-- Simple level filter that denies all events if level is OFF -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>${LOGSTASH_LEVEL}</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
     <!-- Root Logger -->
     <root level="debug">
         <appender-ref ref="ROLLING"/>
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="LOGSTASH"/>
+        <appender-ref ref="ASYNC_LOGSTASH"/>
     </root>
 </configuration>
