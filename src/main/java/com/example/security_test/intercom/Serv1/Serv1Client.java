@@ -26,11 +26,11 @@ public interface Serv1Client {
     ResponseEntity<List<MyClient>> getClients();
 
 
-    @DeleteMapping("/email/{eml}")
+    @DeleteMapping("/delete/email/{eml}")
     ResponseEntity<Boolean> delClient(@PathVariable String eml);
 
 
-    @GetMapping("/email/{eml}")
+    @GetMapping("/find/email/{eml}")
     ResponseEntity<MyClient> findClient(@PathVariable String eml);
 
 }
