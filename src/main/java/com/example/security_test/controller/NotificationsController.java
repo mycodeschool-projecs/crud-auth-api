@@ -37,6 +37,8 @@ public class NotificationsController {
         }
     }
 
+
+
     @GetMapping("/status/{read}")
     public ResponseEntity<List<Notification>> getNotificationsByReadStatus(@PathVariable boolean read) {
         try {
@@ -45,6 +47,21 @@ public class NotificationsController {
                     .withField("readStatus", read)
                     .log();
             return ResponseEntity.ok(notificationsAdapter.getNotificationsByReadStatus(read));
+        } catch (RuntimeException e) {
+            logger.logBuilder().withLevel("ERROR")
+                    .withMessage(e.getMessage()).log();
+            throw e;
+        }
+    }
+
+    @GetMapping("/unreadnotifications")
+    public ResponseEntity<List<Notification>> getUnreadNotifications() {
+        try {
+            logger.logBuilder().withLevel("INFO")
+                    .withMessage("GET_UNREADNOTIFICATIONS")
+                    .withField("readStatus", "false")
+                    .log();
+            return ResponseEntity.ok(notificationsAdapter.getNotificationsByReadStatus(false).stream().sorted((a,b)->a.getTimestamp().compareTo(b.getTimestamp())).toList());
         } catch (RuntimeException e) {
             logger.logBuilder().withLevel("ERROR")
                     .withMessage(e.getMessage()).log();

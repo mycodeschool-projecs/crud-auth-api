@@ -83,7 +83,7 @@ public class Serv1Adapter {
    public boolean delClient(String eml){
       try{
          ResponseEntity<Boolean> resp = serv1Client.delClient(eml);
-         Boolean result = resp.getBody();
+         Boolean result = !resp.getStatusCode().isError();
 
          // Only publish event if deletion was successful
          if (result != null && result) {
