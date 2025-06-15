@@ -60,4 +60,4 @@ param:
   auth-service-name: kube-auth
   auth-service: kube-auth
   notifications-name: kube-notifications
-  notifications-service: notification-service
+  notifications-service: notifications-service
