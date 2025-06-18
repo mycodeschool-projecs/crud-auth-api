@@ -133,3 +133,32 @@ jobs:
           echo "- **Environment**: ${{ needs.build-api.outputs.environment }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+          
+
+  update-k8s-files:
+    needs: build-api
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ needs.build-api.outputs.tag }}
+      ENVIRONMENT: ${{ needs.build-api.outputs.environment }}
+    steps:
+      - name: Checkout k8s-files repository
+        uses: actions/checkout@v2
+        with:
+          repository: 'mycodeschool-projecs/crud-k8s-files'
+          token: ${{ secrets.DEPLOY_ACCESS_TOKEN }}
+          path: 'crud-k8s-files'
+
+      - name: Update and commit app version in auth-service.yaml in other repository
+        run: |
+          cd crud-k8s-files/k8s-files-raw/
+          echo -e "Current ./auth-service.yaml\n$(cat auth-service.yaml)"
+          sed -i -E 's_(mycodeschool/crud-auth-api:)([^"]*)_\1'${{ env.TAG }}'_' command-service.yaml
+          echo -e "Updated ./auth-service.yaml\n$(cat auth-service.yaml)"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "new app version: ${{ env.TAG }}"
+          git push origin HEAD:master
+
