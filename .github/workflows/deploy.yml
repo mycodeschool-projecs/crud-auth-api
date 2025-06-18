@@ -42,7 +42,9 @@ jobs:
       ENVIRONMENT: ${{ github.ref == 'refs/heads/master' && 'prod' || 'dev' }}
       USERNAME: mycodeschool
       REPO: crud-auth-api
-
+    outputs:
+      tag: ${{ steps.generate-tag.outputs.tag }}
+      environment: ${{ steps.generate-tag.outputs.environment }}
     steps:
       - uses: actions/checkout@v4
 
@@ -57,17 +59,77 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build & push multi-arch image
-        env:
-          TAG: "${{ format('{0}-{1}', steps.date.outputs.date, env.ENVIRONMENT) }}"
+      - name: Generate Tag
+        id: generate-tag
         run: |
-          # obținem data exactă (identic cu ce folosește script-ul tău)
           DATE="$(date '+%d.%m.%Y.%H.%M.%S')"
-          export TAG="${DATE}-${ENVIRONMENT}"
-
-          echo "🌀  Will push image as: ${USERNAME}/${REPO}:${TAG}"
-
+          TAG="${DATE}-${ENVIRONMENT}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+          echo "environment=${ENVIRONMENT}" >> $GITHUB_OUTPUT
+          echo "📦 Generated tag: ${TAG}"
+      - name: Build & push multi-arch image
+        run: |
+          export TAG="${{ steps.generate-tag.outputs.tag }}"
+          echo "🐳 Building and pushing image: ${USERNAME}/${REPO}:${TAG}"
           chmod +x ci/build-publish.sh
-          # Build context „.” + ARG pentru Spring
           ./ci/build-publish.sh . --build-arg SPRING_PROFILES_ACTIVE=docker
+
+  update-docker-compose:
+    needs: build-api
+    runs-on: ubuntu-latest
+    #    steps:
+    #      - run: echo "Deploying version ${{ needs.build-api.outputs.tag }}"
+    env:
+      TAG: ${{ needs.build-api.outputs.tag }}
+      ENVIRONMENT: ${{ needs.build-api.outputs.environment }}
+    steps:
+      - name: Checkout docker-files repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'mycodeschool-projecs/crud-docker-files'  # Fixed typo
+          token: ${{ secrets.DEPLOY_ACCESS_TOKEN }}
+          path: 'crud-docker-files'
+
+      - name: Update docker-compose.yml
+        run: |
+          cd crud-docker-files/
+
+          echo "📋 Current docker-compose.yaml:"
+          cat docker-compose.yaml
+
+          # Update the image tag
+          sed -i -E "s|(mycodeschool/crud-auth-api:)[^[:space:]\"']+|\1${{ needs.build-api.outputs.tag }}|g" docker-compose.yaml
+
+          echo -e "\n✅ Updated docker-compose.yaml:"
+          cat docker-compose.yaml
+
+      - name: Commit and push changes
+        run: |
+          cd crud-docker-files/
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add docker-compose.yaml
+
+          if git diff --staged --quiet; then
+            echo "📝 No changes to commit"
+          else
+            git commit -m "chore: update crud-auth-api to ${{ needs.build-api.outputs.tag }}"
+            git push origin HEAD:master
+            echo "✅ Pushed new version: ${{ needs.build-api.outputs.tag }}"
+          fi
+
+  notify-success:
+    needs: [build-api, update-docker-compose]
+    runs-on: ubuntu-latest
+    if: success()
+    steps:
+      - name: Summary
+        run: |
+          echo "## 🎉 Deployment Successful!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Image**: mycodeschool/crud-auth-api:${{ needs.build-api.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment**: ${{ needs.build-api.outputs.environment }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
