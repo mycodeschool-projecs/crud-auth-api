@@ -15,6 +15,10 @@ param:
   microserv1-name: kube-ms1
   microserv1-service: kube-ms1
   api-service: api-service
+  auth-service-name: kube-auth
+  auth-service: kube-auth
+  notifications-name: kube-notifications
+  notifications-service: notifications-service
 
 management:
   tracing:
