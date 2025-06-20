@@ -5,7 +5,7 @@ spring:
     password: testpass
 
   rabbitmq:
-    host: crud-app-rabbitmq
+    host: rabbitmq
     port: 5672
     username: guest
     password: guest
@@ -53,3 +53,7 @@ logging:
     org.springframework.amqp: info
   file:
     name: kube-land-logs.log
+  logstash:
+    enabled: false
+    destination: logstash:3100
+    level: OFF  # Set to ALL to enable, OFF to disable
