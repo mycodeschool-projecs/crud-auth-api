@@ -38,22 +38,3 @@ management:
       enabled: true
 
 
-metrics:
-  distribution:
-    percentiles-histogram:
-      http:
-        server:
-          requests: true
-
-logging:
-  pattern:
-    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
-  level:
-    root: debug
-    org.springframework.amqp: info
-  file:
-    name: kube-land-logs.log
-  logstash:
-    enabled: false
-    destination: logstash:3100
-    level: OFF  # Set to ALL to enable, OFF to disable
