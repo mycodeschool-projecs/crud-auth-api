@@ -95,7 +95,7 @@ logging:
     root: debug
     org.springframework.amqp: info
   file:
-    name: kube-land-logs.log
+    name: crud-logs.log
   logstash:
     enabled: false
     destination: localhost:3100

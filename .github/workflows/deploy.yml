@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - master
-      - feat/**
+      - fix/**
   pull_request:
   workflow_dispatch:
 
@@ -161,5 +161,5 @@ jobs:
           git add .
           git commit -m "new app version: ${{ env.TAG }}"
           git push origin HEAD:master 
-          git push origin HEAD:fix/fix-rabbit-kibana
+          git push origin HEAD:fix/fix-kibana-logs
 
