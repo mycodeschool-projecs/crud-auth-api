@@ -160,6 +160,8 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "new app version: ${{ env.TAG }}"
+          CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          
           if [ "$CURRENT_BRANCH" = "master" ]; then
               echo "Pushing to master branch"
               git push origin HEAD:master
