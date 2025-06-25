@@ -89,6 +89,7 @@ public class AuthenticationController {
             logger.logBuilder().withLevel("INFO")
                     .withMessage("ADDED_CLIENT_OK")
                     .withField("addedClient",client).log();
+
             return ResponseEntity.ok(serv1Adapter.addClient(client));
 
         }catch (RuntimeException e){
