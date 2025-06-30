@@ -99,7 +99,8 @@ public class SecurityConfiguration {
         UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500","http://localhost:5500","http://localhost:5173", "http://localhost" ,"http://localhost:3000", "http://localhost:8081" , "http://localhost:8080" , "http://localhost:8083"));
+        corsConfiguration.setAllowedOrigins(Arrays.asList("http://127.0.0.1:5500","http://localhost:5500","http://localhost:5173", "http://localhost" ,"http://localhost:3000", "http://localhost:8081" , "http://localhost:8080" , "http://localhost:8083","http://icode.mywire.org",
+                "http://icode.mywire.org:3000","http://icode.mywire.org:8081","http://icode.mywire.org:8082","http://icode.mywire.org:8083","http://icode.mywire.org:8080"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Access-Control-Allow-Origin", "Content-Type",
                 "Accept", "Jwt-Token", "Authorization", "Origin, Accept", "X-Requested-With",
                 "Access-Control-Request-Method", "Access-Control-Request-Headers", "Access-Control-Allow-Headers"));
