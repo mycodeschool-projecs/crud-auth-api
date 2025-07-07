@@ -19,6 +19,16 @@ concurrency:
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
+    services:
+      sonarqube:
+        image: sonarqube:9.9-community
+        ports:
+          - 9000:9000
+        options: >-
+          --health-cmd "curl -s http://localhost:9000/api/system/health | grep -q '\"status\":\"UP\"'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
@@ -55,14 +65,17 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-maven-
 
-      - name: Run SonarQube Analysis
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Wait for SonarQube to be ready
+        run: sleep 20 # sau un healthcheck real
+
+      - name: Run SonarQube analysis
         run: |
           ./mvnw verify sonar:sonar \
-            -Dsonar.projectKey=crud-auth-api \
-            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
-            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+            -Dsonar.projectKey=myproject \
+            -Dsonar.host.url=http://localhost:9000 \
+            -Dsonar.login=admin \
+            -Dsonar.password=admin
+
 
   build-api:
     needs: [unit-tests,sonarqube-analysis]
