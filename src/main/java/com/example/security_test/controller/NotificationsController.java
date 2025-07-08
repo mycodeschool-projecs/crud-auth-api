@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.example.security_test.system.Constants;
 import java.util.List;
 
 @RestController
@@ -21,6 +21,7 @@ public class NotificationsController {
     public NotificationsController(NotificationsAdapter notificationsAdapter, StructuredLogger logger) {
         this.notificationsAdapter = notificationsAdapter;
         this.logger = logger;
+
     }
 
     @GetMapping
@@ -31,7 +32,7 @@ public class NotificationsController {
                     .log();
             return ResponseEntity.ok(notificationsAdapter.getAllNotifications());
         } catch (RuntimeException e) {
-            logger.logBuilder().withLevel("ERROR")
+            logger.logBuilder().withLevel(Constants.LEVEL_ERROR)
                     .withMessage(e.getMessage()).log();
             throw e;
         }
@@ -48,7 +49,7 @@ public class NotificationsController {
                     .log();
             return ResponseEntity.ok(notificationsAdapter.getNotificationsByReadStatus(read));
         } catch (RuntimeException e) {
-            logger.logBuilder().withLevel("ERROR")
+            logger.logBuilder().withLevel(Constants.LEVEL_ERROR)
                     .withMessage(e.getMessage()).log();
             throw e;
         }
@@ -63,7 +64,7 @@ public class NotificationsController {
                     .log();
             return ResponseEntity.ok(notificationsAdapter.getNotificationsByReadStatus(false).stream().sorted((a,b)->a.getTimestamp().compareTo(b.getTimestamp())).toList());
         } catch (RuntimeException e) {
-            logger.logBuilder().withLevel("ERROR")
+            logger.logBuilder().withLevel(Constants.LEVEL_ERROR)
                     .withMessage(e.getMessage()).log();
             throw e;
         }
@@ -78,7 +79,7 @@ public class NotificationsController {
                     .log();
             return ResponseEntity.ok(notificationsAdapter.getNotificationsBySourceService(sourceService));
         } catch (RuntimeException e) {
-            logger.logBuilder().withLevel("ERROR")
+            logger.logBuilder().withLevel(Constants.LEVEL_ERROR)
                     .withMessage(e.getMessage()).log();
             throw e;
         }
@@ -93,7 +94,7 @@ public class NotificationsController {
                     .log();
             return ResponseEntity.ok(notificationsAdapter.getNotificationsByEntityType(entityType));
         } catch (RuntimeException e) {
-            logger.logBuilder().withLevel("ERROR")
+            logger.logBuilder().withLevel(Constants.LEVEL_ERROR)
                     .withMessage(e.getMessage()).log();
             throw e;
         }
@@ -108,7 +109,7 @@ public class NotificationsController {
                     .log();
             return ResponseEntity.ok(notificationsAdapter.getNotificationsByOperation(operation));
         } catch (RuntimeException e) {
-            logger.logBuilder().withLevel("ERROR")
+            logger.logBuilder().withLevel(Constants.LEVEL_ERROR)
                     .withMessage(e.getMessage()).log();
             throw e;
         }
@@ -123,7 +124,7 @@ public class NotificationsController {
                     .log();
             return ResponseEntity.ok(notificationsAdapter.getNotificationsByEntityId(entityId));
         } catch (RuntimeException e) {
-            logger.logBuilder().withLevel("ERROR")
+            logger.logBuilder().withLevel(Constants.LEVEL_ERROR)
                     .withMessage(e.getMessage()).log();
             throw e;
         }

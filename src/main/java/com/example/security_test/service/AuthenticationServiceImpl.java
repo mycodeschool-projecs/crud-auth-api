@@ -43,6 +43,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             // Don't fail the signup process if event publishing fails
         }
 
+
         var jwt = jwtService.generateToken(user);
         return JwtAuthenticationResponse.builder().token(jwt).build();
     }
@@ -53,6 +54,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+
         var jwt = jwtService.generateToken(user);
 
         // Publish login event

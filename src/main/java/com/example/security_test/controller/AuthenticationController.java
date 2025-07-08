@@ -9,13 +9,10 @@ import com.example.security_test.service.AuthenticationService;
 import com.example.security_test.service.JwtAuthenticationResponse;
 import com.example.security_test.system.logs.StructuredLogger;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import lombok.RequiredArgsConstructor;
-
+import com.example.security_test.system.Constants;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,7 +53,7 @@ public class AuthenticationController {
 
             return ResponseEntity.ok(authenticationService.signup(request));
         }
-        logger.logBuilder().withLevel("ERROR")
+        logger.logBuilder().withLevel(Constants.LEVEL_ERROR)
                 .withMessage("SIGNUP_ERROR")
                 .withField("sgnUpUser",request).log();
 
@@ -67,7 +64,6 @@ public class AuthenticationController {
 
     @PostMapping("/auth/signin")
     public ResponseEntity<JwtAuthenticationResponse> signin(@RequestBody SigninRequest request) {
-//        logger.logBuilder().withMessage("ACTION_SIGN_IN").withLevel("INFO").withField("SIGNIN_EMAIL:","jhjhjh").log();
         try{
             logger.logBuilder().withLevel("INFO")
                     .withMessage("USER_SIGNIN")
@@ -76,7 +72,7 @@ public class AuthenticationController {
             return ResponseEntity.ok(authenticationService.signin(request));
 
         }catch (Exception e){
-            logger.logBuilder().withLevel("ERROR").withMessage("BAD_CREDENTIAL").log();
+            logger.logBuilder().withLevel(Constants.LEVEL_ERROR).withMessage("BAD_CREDENTIAL").log();
             throw new RuntimeException("Bad credential!");
         }
 
@@ -90,10 +86,11 @@ public class AuthenticationController {
                     .withMessage("ADDED_CLIENT_OK")
                     .withField("addedClient",client).log();
 
+
             return ResponseEntity.ok(serv1Adapter.addClient(client));
 
         }catch (RuntimeException e){
-            logger.logBuilder().withLevel("ERROR")
+            logger.logBuilder().withLevel(Constants.LEVEL_ERROR)
                     .withMessage(e.getMessage()).log();
             throw e;
         }
@@ -110,7 +107,7 @@ public class AuthenticationController {
             return ResponseEntity.ok(serv1Adapter.updClient(client));
 
         }catch (RuntimeException e){
-            logger.logBuilder().withLevel("ERROR")
+            logger.logBuilder().withLevel(Constants.LEVEL_ERROR)
                     .withMessage(e.getMessage()).log();
             throw e;
         }
@@ -124,10 +121,11 @@ public class AuthenticationController {
             logger.logBuilder().withLevel("INFO")
                     .withMessage("DEL_CLIENT")
                     .withField("delClientEml",eml).log();
+
             return ResponseEntity.ok(serv1Adapter.delClient(eml));
 
         }catch (RuntimeException e){
-            logger.logBuilder().withLevel("ERROR")
+            logger.logBuilder().withLevel(Constants.LEVEL_ERROR)
                     .withMessage(e.getMessage()).log();
 
             throw e;
@@ -144,7 +142,7 @@ public class AuthenticationController {
             return ResponseEntity.ok(serv1Adapter.findClient(eml));
 
         }catch (RuntimeException e){
-            logger.logBuilder().withLevel("ERROR")
+            logger.logBuilder().withLevel(Constants.LEVEL_ERROR)
                     .withMessage(e.getMessage()).log();
             throw e;
         }
@@ -159,6 +157,7 @@ public class AuthenticationController {
             logger.logBuilder().withLevel("INFO")
                     .withMessage("GET_CLIENTS")
                     .withField("getAllClients",list.size());
+
 
             return ResponseEntity.ok(list);
 
