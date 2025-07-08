@@ -34,7 +34,7 @@ jobs:
           restore-keys: ${{ runner.os }}-maven-
       - name: Run tests
         run: ./mvnw -B test
-        
+
   build-api:
     needs: [unit-tests,sonarqube-analysis]
     runs-on: ubuntu-latest
