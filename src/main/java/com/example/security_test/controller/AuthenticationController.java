@@ -51,13 +51,15 @@ public class AuthenticationController {
                     .withMessage("USER_SIGNUP")
                     .withField("sgnUpUser",request).log();
 
+
             return ResponseEntity.ok(authenticationService.signup(request));
         }
         logger.logBuilder().withLevel(Constants.LEVEL_ERROR)
                 .withMessage("SIGNUP_ERROR")
                 .withField("sgnUpUser",request).log();
 
-            return ResponseEntity.status(HttpStatus.CONFLICT)
+
+                    return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Collections.singletonMap("error", "User already exists!"));
 
     }
