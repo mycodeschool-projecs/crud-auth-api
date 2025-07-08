@@ -20,15 +20,6 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     services:
-      sonarqube:
-        image: sonarqube:9.9-community
-        ports:
-          - 9000:9000
-        options: >-
-          --health-cmd "curl -s http://localhost:9000/api/system/health | grep -q '\"status\":\"UP\"'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK
@@ -45,10 +36,6 @@ jobs:
       - name: Run tests
         run: ./mvnw -B test
 
-  sonarqube-analysis:
-    needs: unit-tests
-    runs-on: ubuntu-latest
-    steps:
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
