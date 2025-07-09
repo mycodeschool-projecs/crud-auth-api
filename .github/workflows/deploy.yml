@@ -43,17 +43,53 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+
       - name: Cache Maven packages
         uses: actions/cache@v4
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+
       - name: Build and analyze
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=test-crud-auth-api -Dsonar.projectName='test-crud-auth-api'
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+          -Dsonar.projectKey=test-crud-auth-api \
+          -Dsonar.projectName='test-crud-auth-api'
+
+      - name: Wait for SonarQube Quality Gate
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          echo "🔍 Waiting for SonarQube quality gate result..."
+
+          ANALYSIS_ID=$(curl -s -u $SONAR_TOKEN: "$SONAR_HOST_URL/api/ce/component?component=test-crud-auth-api" | jq -r '.queue[0].id')
+
+          echo "🔁 Polling analysis status..."
+          STATUS="PENDING"
+          while [[ "$STATUS" == "PENDING" || "$STATUS" == "IN_PROGRESS" ]]; do
+            STATUS=$(curl -s -u $SONAR_TOKEN: "$SONAR_HOST_URL/api/ce/task?id=$ANALYSIS_ID" | jq -r '.task.status')
+            echo "Status: $STATUS"
+            sleep 5
+          done
+
+          if [ "$STATUS" != "SUCCESS" ]; then
+            echo "❌ SonarQube analysis failed (task status: $STATUS)"
+            exit 1
+          fi
+
+          QUALITY_STATUS=$(curl -s -u $SONAR_TOKEN: "$SONAR_HOST_URL/api/qualitygates/project_status?projectKey=test-crud-auth-api" | jq -r '.projectStatus.status')
+
+          if [ "$QUALITY_STATUS" != "OK" ]; then
+            echo "❌ Quality Gate failed: $QUALITY_STATUS"
+            exit 1
+          fi
+
+          echo "✅ Quality Gate PASSED"
+
 
   build-api:
     needs: [unit-tests]
