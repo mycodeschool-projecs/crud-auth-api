@@ -55,9 +55,11 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-          -Dsonar.projectKey=test-crud-auth-api \
-          -Dsonar.projectName='test-crud-auth-api'
+        run: |
+          mvn -B verify \
+            org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=test-crud-auth-api \
+            -Dsonar.projectName='test-crud-auth-api'
 
       - name: Wait for SonarQube Quality Gate
         env:
